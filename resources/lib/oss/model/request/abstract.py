@@ -23,7 +23,10 @@ class OpenSubtitlesRequest(object):
         logging(self.DEFAULT_LIST)
         for key, default_value in list(self.DEFAULT_LIST.items()):
             current_value = getattr(self, key)
-            logging("Some property {0}: {1}, {2}".format(key, default_value, current_value))
+            try:
+                logging("Some property {0}: {1}, {2}".format(key, default_value, current_value))
+            except:
+                logging("Some property {0}: {1}, {2}".format(key, default_value, current_value.decode('utf-8')))
             if current_value and current_value != default_value:
                 request_params[key] = current_value
 
