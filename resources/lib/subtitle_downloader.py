@@ -73,7 +73,7 @@ class SubtitleDownloader:
             media_data = {"query": query}
         else:
             media_data = get_media_data(self.tvshow_workaround)
-            if not media_data[u"query"]:
+            if not media_data["query"]:
                 if "basename" in file_data:
                     media_data["query"] = file_data["basename"]     # rewrites Original name with basename in query !!!
             log(__name__, "media_data '%s' " % media_data)
@@ -92,6 +92,33 @@ class SubtitleDownloader:
         else:
             # TODO retry using guessit???
             log(__name__, "No subtitle found")
+            # TRY with basename
+            if "basename" in file_data:
+                log(__name__, "Trying with basename") 
+                media_data["query"] = file_data["basename"]
+                
+                temp_dict = media_data.copy()
+                temp_dict.update(file_data)
+                temp_dict.update(language_data)
+                self.query = temp_dict
+
+                try:
+                    self.subtitles = self.open_subtitles.search_subtitles(self.query)
+                # TODO handle errors individually. Get clear error messages to the user
+                except (TooManyRequests, ServiceUnavailable, ProviderError, ValueError), e:
+                    error(__name__, 32001, e)
+
+                if self.subtitles and len(self.subtitles):
+                    log(__name__, len(self.subtitles))
+                    #newlist = sorted(self.subtitles, key=lambda d: d['attributes']['language'])
+                    preffered_language=language_data['languages'].split(",");    #  preffered language for list sorting
+                    newlist = sorted(self.subtitles, key=lambda d: (d['attributes']['language']!=preffered_language, d['attributes']['language'])) 
+                    self.subtitles = newlist
+                    
+                    self.list_subtitles()
+                else:
+                    # TODO retry using guessit???
+                    log(__name__, "No subtitle found")
 
     def download(self):
         valid = 1
