@@ -18,7 +18,7 @@ def get_file_path():
     return xbmc.Player().getPlayingFile()
 
 
-def get_media_data():
+def get_media_data(tvshow_workaround = False):
     item = {u"year": xbmc.getInfoLabel(u"VideoPlayer.Year"),
             u"season_number": unicode(xbmc.getInfoLabel(u"VideoPlayer.Season")),
             u"episode_number": unicode(xbmc.getInfoLabel(u"VideoPlayer.Episode")),
@@ -28,6 +28,14 @@ def get_media_data():
 
     if item[u"tv_show_title"]:
         item[u"query"] = item[u"tv_show_title"]
+
+        # WORKAROUND FOR TV SHOWS DUE TO NONFUNCTIONAL EPISODE AND SEASON PARAMS IN API
+        if tvshow_workaround == 'true':
+            if item[u"season_number"] and item[u"episode_number"]:
+                item[u"query"] = "{0}+S{1:0>2}E{2:0>2}".format(item[u"query"], item[u"season_number"], item[u"episode_number"])
+                item[u"season_number"] = ''
+                item[u"episode_number"] = ''
+
         item[u"year"] = None  # Kodi gives episode year, OS searches by series year. Without year safer.
         item[u"imdb_id"] = None  # Kodi gives strange id. Without id safer.
         # TODO if no season and episode numbers use guessit
@@ -153,7 +161,7 @@ def clean_feature_release_name(title, release, movie_name=u""):
         name = title
 
     match_ratio = SequenceMatcher(None, name, release).ratio()
-    log(__name__, "name: {0}, release: {1}, match_ratio: {2}".format(name, release, match_ratio))
+    # log(__name__, "name: {0}, release: {1}, match_ratio: {2}".format(name, release, match_ratio))
     if name in release:
         return release
     elif match_ratio > 0.3:

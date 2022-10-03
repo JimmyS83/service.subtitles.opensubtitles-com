@@ -57,7 +57,7 @@ def query_to_params(query, _type):
 
 class OpenSubtitlesProvider(object):
 
-    def __init__(self, api_key, username, password):
+    def __init__(self, api_key, username, password, tvshow_workaround):
 
        # if not all((username, password)):
        #     raise ConfigurationError("Username and password must be specified")
@@ -68,6 +68,7 @@ class OpenSubtitlesProvider(object):
         self.api_key = api_key
         self.username = username
         self.password = password
+        self.tvshow_workaround = tvshow_workaround
 
         self.request_headers = {u"Api-Key": self.api_key, u"Content-Type": CONTENT_TYPE, u"Accept": CONTENT_TYPE}
 

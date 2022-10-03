@@ -38,7 +38,7 @@ class SubtitleDownloader(object):
         self.api_key = __addon__.getSetting(u"APIKey")
         self.username = __addon__.getSetting(u"OSuser")
         self.password = __addon__.getSetting(u"OSpass")
-
+        self.tvshow_workaround = __addon__.getSetting(u"tvshow_workaround")
         log(__name__, sys.argv)
 
         self.sub_format = u"srt"
@@ -49,7 +49,7 @@ class SubtitleDownloader(object):
         self.file = {}
 
         try:
-            self.open_subtitles = OpenSubtitlesProvider(self.api_key, self.username, self.password)
+            self.open_subtitles = OpenSubtitlesProvider(self.api_key, self.username, self.password, self.tvshow_workaround)
         except ConfigurationError, e:
             error(__name__, 32002, e)
 
@@ -73,9 +73,10 @@ class SubtitleDownloader(object):
         if query:
             media_data = {u"query": query}
         else:
-            media_data = get_media_data()
-            if u"basename" in file_data:
-                media_data[u"query"] = file_data[u"basename"]   # rewrites Original name with basename in query !!!
+            media_data = get_media_data(self.tvshow_workaround)
+            if not media_data[u"query"]:
+                if u"basename" in file_data:
+                    media_data[u"query"] = file_data[u"basename"]   # rewrites Original name with basename in query !!!
             log(__name__, u"media_data '%s' " % media_data)
 
         #self.query = {**media_data, **file_data, **language_data}
@@ -151,7 +152,7 @@ class SubtitleDownloader(object):
                 return
             attributes = subtitle[u"attributes"]
             language = convert_language(attributes[u"language"], True)
-            log(__name__, attributes)
+            #log(__name__, attributes)
             clean_name = clean_feature_release_name(attributes[u"feature_details"][u"title"], attributes[u"release"],
                                                     attributes[u"feature_details"][u"movie_name"])
             list_item = xbmcgui.ListItem(label=language,
