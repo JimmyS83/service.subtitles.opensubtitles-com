@@ -25,8 +25,17 @@ def get_media_data():
 
     if item["tv_show_title"]:
         item["query"] = item["tv_show_title"]
+        
+        # WORKAROUND FOR TV SHOWS DUE TO NONFUNCTIONAL EPISODE AND SEASON PARAMS IN API
+        if tvshow_workaround == 'true':
+            if item["season_number"] and item["episode_number"]:
+                item["query"] = "{0}+S{1:0>2}E{2:0>2}".format(item["query"], item["season_number"], item["episode_number"])
+                item["season_number"] = ''
+                item["episode_number"] = ''
+
         item["year"] = None  # Kodi gives episode year, OS searches by series year. Without year safer.
         item["imdb_id"] = None  # Kodi gives strange id. Without id safer.
+
         # TODO if no season and episode numbers use guessit
 
     elif item["original_title"]:
@@ -148,7 +157,7 @@ def clean_feature_release_name(title, release, movie_name=""):
         name = title
 
     match_ratio = SequenceMatcher(None, name, release).ratio()
-    log(__name__, f"name: {name}, release: {release}, match_ratio: {match_ratio}")
+    #log(__name__, f"name: {name}, release: {release}, match_ratio: {match_ratio}")
     if name in release:
         return release
     elif match_ratio > 0.3:

@@ -36,6 +36,7 @@ class SubtitleDownloader:
         self.api_key = __addon__.getSetting("APIKey")
         self.username = __addon__.getSetting("OSuser")
         self.password = __addon__.getSetting("OSpass")
+        self.tvshow_workaround = __addon__.getSetting("tvshow_workaround")
 
         log(__name__, sys.argv)
 
@@ -47,7 +48,7 @@ class SubtitleDownloader:
         self.file = {}
 
         try:
-            self.open_subtitles = OpenSubtitlesProvider(self.api_key, self.username, self.password)
+            self.open_subtitles = OpenSubtitlesProvider(self.api_key, self.username, self.password, self.tvshow_workaround)
         except ConfigurationError as e:
             error(__name__, 32002, e)
 
@@ -71,9 +72,10 @@ class SubtitleDownloader:
         if query:
             media_data = {"query": query}
         else:
-            media_data = get_media_data()
-            if "basename" in file_data:
-                media_data["query"] = file_data["basename"]
+            media_data = get_media_data(self.tvshow_workaround)
+            if not media_data[u"query"]:
+                if "basename" in file_data:
+                    media_data["query"] = file_data["basename"]     # rewrites Original name with basename in query !!!
             log(__name__, "media_data '%s' " % media_data)
 
         self.query = {**media_data, **file_data, **language_data}
@@ -140,7 +142,7 @@ class SubtitleDownloader:
                 return
             attributes = subtitle["attributes"]
             language = convert_language(attributes["language"], True)
-            log(__name__, attributes)
+            #log(__name__, attributes)
             clean_name = clean_feature_release_name(attributes["feature_details"]["title"], attributes["release"],
                                                     attributes["feature_details"]["movie_name"])
             list_item = xbmcgui.ListItem(label=language,
