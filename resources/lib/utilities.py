@@ -28,7 +28,7 @@ def error(module, msg_id=None, msg=u""):
         message = u"Add-on error with empty message"
     log(module, message)
     if msg_id:
-        xbmcgui.Dialog().ok(__addon_name__, "{0}\n{1}".format(__language__(2103), msg_id))
+        xbmcgui.Dialog().ok(__addon_name__, "{0}\n{1}".format(__language__(msg_id).encode('utf-8'), message))
 
 
 def get_params(string=u""):
