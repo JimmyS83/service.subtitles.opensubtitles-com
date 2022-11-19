@@ -15,13 +15,13 @@ def get_file_path():
     return xbmc.Player().getPlayingFile()
 
 
-def get_media_data():
-    item = {"year": xbmc.getInfoLabel("VideoPlayer.Year"),
-            "season_number": str(xbmc.getInfoLabel("VideoPlayer.Season")),
-            "episode_number": str(xbmc.getInfoLabel("VideoPlayer.Episode")),
-            "tv_show_title": normalize_string(xbmc.getInfoLabel("VideoPlayer.TVshowtitle")),
-            "original_title": normalize_string(xbmc.getInfoLabel("VideoPlayer.OriginalTitle")),
-            "imdb_id": xbmc.getInfoLabel("VideoPlayer.IMDBNumber")}
+def get_media_data(tvshow_workaround = False):
+    item = {"year": xbmc.getInfoLabel("VideoPlayer.Year") if xbmc.getInfoLabel(u"VideoPlayer.Year") else '',
+            "season_number": str(xbmc.getInfoLabel("VideoPlayer.Season")) if xbmc.getInfoLabel(u"VideoPlayer.Season") else '',
+            "episode_number": str(xbmc.getInfoLabel("VideoPlayer.Episode")) if xbmc.getInfoLabel(u"VideoPlayer.Episode") else '',
+            "tv_show_title": normalize_string(xbmc.getInfoLabel("VideoPlayer.TVshowtitle")) if xbmc.getInfoLabel(u"VideoPlayer.TVshowtitle") else '',
+            "original_title": normalize_string(xbmc.getInfoLabel("VideoPlayer.OriginalTitle")) if xbmc.getInfoLabel(u"VideoPlayer.OriginalTitle") else '',
+            "imdb_id": xbmc.getInfoLabel("VideoPlayer.IMDBNumber") if xbmc.getInfoLabel(u"VideoPlayer.IMDBNumber") else ''}
 
     if item["tv_show_title"]:
         item["query"] = item["tv_show_title"]
@@ -47,9 +47,9 @@ def get_media_data():
   #      # TODO try guessit if no proper title here
 
     # TODO get episodes like that and test them properly out
-    if item["episode_number"].lower().find("s") > -1:  # Check if season is "Special"
-        item["season_number"] = "0"  #
-        item["episode_number"] = item["episode_number"][-1:]
+    #if item["episode_number"].lower().find("s") > -1:  # Check if season is "Special"
+    #    item["season_number"] = "0"  #
+    #    item["episode_number"] = item["episode_number"][-1:]
 
     return item
 

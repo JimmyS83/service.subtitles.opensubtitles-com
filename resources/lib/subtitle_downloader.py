@@ -73,7 +73,7 @@ class SubtitleDownloader:
             media_data = {"query": query}
         else:
             media_data = get_media_data(self.tvshow_workaround)
-            if not media_data["query"]:
+            if "query" not in media_data or not media_data["query"]:
                 if "basename" in file_data:
                     media_data["query"] = file_data["basename"]     # rewrites Original name with basename in query !!!
             log(__name__, "media_data '%s' " % media_data)
@@ -105,7 +105,7 @@ class SubtitleDownloader:
                 try:
                     self.subtitles = self.open_subtitles.search_subtitles(self.query)
                 # TODO handle errors individually. Get clear error messages to the user
-                except (TooManyRequests, ServiceUnavailable, ProviderError, ValueError), e:
+                except (TooManyRequests, ServiceUnavailable, ProviderError, ValueError) as e:
                     error(__name__, 32001, e)
 
                 if self.subtitles and len(self.subtitles):
