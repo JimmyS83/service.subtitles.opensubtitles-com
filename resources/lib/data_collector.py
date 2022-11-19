@@ -19,9 +19,10 @@ def get_file_path():
 
 
 def get_media_data(tvshow_workaround = False):
-    item = {u"year": xbmc.getInfoLabel(u"VideoPlayer.Year"),
-            u"season_number": unicode(xbmc.getInfoLabel(u"VideoPlayer.Season")),
-            u"episode_number": unicode(xbmc.getInfoLabel(u"VideoPlayer.Episode")),
+    item = {u"year": int(xbmc.getInfoLabel(u"VideoPlayer.Year")),
+            u"season_number": int(xbmc.getInfoLabel(u"VideoPlayer.Season")) if xbmc.getInfoLabel(u"VideoPlayer.Season") else u'',
+            u"episode_number": int(xbmc.getInfoLabel(u"VideoPlayer.Episode")) if xbmc.getInfoLabel(u"VideoPlayer.Episode") else u'',
+            u"title": normalize_string(xbmc.getInfoLabel(u"VideoPlayer.title")),
             u"tv_show_title": normalize_string(xbmc.getInfoLabel(u"VideoPlayer.TVshowtitle")),
             u"original_title": normalize_string(xbmc.getInfoLabel(u"VideoPlayer.OriginalTitle")),
             u"imdb_id": xbmc.getInfoLabel(u"VideoPlayer.IMDBNumber")}
@@ -49,9 +50,9 @@ def get_media_data(tvshow_workaround = False):
   #      # TODO try guessit if no proper title here
 
     # TODO get episodes like that and test them properly out
-    if item[u"episode_number"].lower().find(u"s") > -1:  # Check if season is "Special"
-        item[u"season_number"] = u"0"  #
-        item[u"episode_number"] = item[u"episode_number"][-1:]
+    #if item[u"episode_number"].lower().find(u"s") > -1:  # Check if season is "Special"
+    #    item[u"season_number"] = 0  #
+    #    item[u"episode_number"] = item[u"episode_number"][-1:]
 
     return item
 
