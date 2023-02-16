@@ -19,13 +19,13 @@ def get_file_path():
 
 
 def get_media_data(tvshow_workaround = False):
-    item = {u"year": int(xbmc.getInfoLabel(u"VideoPlayer.Year")),
+    item = {u"year": int(xbmc.getInfoLabel(u"VideoPlayer.Year")) if xbmc.getInfoLabel(u"VideoPlayer.Year") else u'',
             u"season_number": int(xbmc.getInfoLabel(u"VideoPlayer.Season")) if xbmc.getInfoLabel(u"VideoPlayer.Season") else u'',
             u"episode_number": int(xbmc.getInfoLabel(u"VideoPlayer.Episode")) if xbmc.getInfoLabel(u"VideoPlayer.Episode") else u'',
-            u"title": normalize_string(xbmc.getInfoLabel(u"VideoPlayer.title")),
-            u"tv_show_title": normalize_string(xbmc.getInfoLabel(u"VideoPlayer.TVshowtitle")),
-            u"original_title": normalize_string(xbmc.getInfoLabel(u"VideoPlayer.OriginalTitle")),
-            u"imdb_id": xbmc.getInfoLabel(u"VideoPlayer.IMDBNumber")}
+            u"title": normalize_string(xbmc.getInfoLabel(u"VideoPlayer.title")) if xbmc.getInfoLabel(u"VideoPlayer.title") else u'',
+            u"tv_show_title": normalize_string(xbmc.getInfoLabel(u"VideoPlayer.TVshowtitle")) if xbmc.getInfoLabel(u"VideoPlayer.TVshowtitle") else u'',
+            u"original_title": normalize_string(xbmc.getInfoLabel(u"VideoPlayer.OriginalTitle")) if xbmc.getInfoLabel(u"VideoPlayer.OriginalTitle") else u'',
+            u"imdb_id": xbmc.getInfoLabel(u"VideoPlayer.IMDBNumber") if xbmc.getInfoLabel(u"VideoPlayer.IMDBNumber") else u''}
 
     if item[u"tv_show_title"]:
         item[u"query"] = item[u"tv_show_title"]
