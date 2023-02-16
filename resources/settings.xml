@@ -32,6 +32,11 @@
         </category>
         <category id="filter" label="32102">
             <group id="1">
+				<setting id="tvshow_workaround" type="boolean" label="32214">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle" />
+                </setting>
                 <setting id="hearing_impaired" type="string" label="32211">
                     <level>0</level>
                     <default>exclude</default>
