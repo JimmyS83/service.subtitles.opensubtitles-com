@@ -74,7 +74,7 @@ class SubtitleDownloader(object):
             media_data = {u"query": query}
         else:
             media_data = get_media_data(self.tvshow_workaround)
-            if not media_data[u"query"]:
+            if u"query" not in media_data or not media_data[u"query"]:
                 if u"basename" in file_data:
                     media_data[u"query"] = file_data[u"basename"]   # rewrites Original name with basename in query !!!
             log(__name__, u"media_data '%s' " % media_data)
