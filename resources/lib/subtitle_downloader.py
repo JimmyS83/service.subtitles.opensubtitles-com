@@ -15,7 +15,7 @@ from resources.lib.data_collector import get_language_data, get_media_data, get_
 from resources.lib.exceptions import AuthenticationError, ConfigurationError, DownloadLimitExceeded, ProviderError, \
     ServiceUnavailable, TooManyRequests
 from resources.lib.file_operations import get_file_data
-from resources.lib.os.provider import OpenSubtitlesProvider
+from resources.lib.oss.provider import OpenSubtitlesProvider
 from resources.lib.utilities import get_params, log, error
 
 __addon__ = xbmcaddon.Addon()

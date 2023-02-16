@@ -4,8 +4,8 @@ from typing import Union
 
 from requests import Session, ConnectionError, HTTPError, ReadTimeout, Timeout, RequestException
 
-from resources.lib.os.model.request.subtitles import OpenSubtitlesSubtitlesRequest
-from resources.lib.os.model.request.download import OpenSubtitlesDownloadRequest
+from resources.lib.oss.model.request.subtitles import OpenSubtitlesSubtitlesRequest
+from resources.lib.oss.model.request.download import OpenSubtitlesDownloadRequest
 
 '''local kodi module imports. replace by any other exception, cache, log provider'''
 from resources.lib.exceptions import AuthenticationError, ConfigurationError, DownloadLimitExceeded, ProviderError, \
