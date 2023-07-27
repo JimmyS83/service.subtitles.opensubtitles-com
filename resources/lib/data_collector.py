@@ -24,8 +24,7 @@ def get_media_data(tvshow_workaround = False):
             u"episode_number": int(xbmc.getInfoLabel(u"VideoPlayer.Episode")) if xbmc.getInfoLabel(u"VideoPlayer.Episode") else u'',
             u"title": normalize_string(xbmc.getInfoLabel(u"VideoPlayer.title")) if xbmc.getInfoLabel(u"VideoPlayer.title") else u'',
             u"tv_show_title": normalize_string(xbmc.getInfoLabel(u"VideoPlayer.TVshowtitle")) if xbmc.getInfoLabel(u"VideoPlayer.TVshowtitle") else u'',
-            u"original_title": normalize_string(xbmc.getInfoLabel(u"VideoPlayer.OriginalTitle")) if xbmc.getInfoLabel(u"VideoPlayer.OriginalTitle") else u'',
-            u"imdb_id": xbmc.getInfoLabel(u"VideoPlayer.IMDBNumber") if xbmc.getInfoLabel(u"VideoPlayer.IMDBNumber") else u''}
+            u"original_title": normalize_string(xbmc.getInfoLabel(u"VideoPlayer.OriginalTitle")) if xbmc.getInfoLabel(u"VideoPlayer.OriginalTitle") else u''}
 
     if item[u"tv_show_title"]:
         item[u"query"] = item[u"tv_show_title"]
