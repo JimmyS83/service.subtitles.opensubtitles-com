@@ -165,7 +165,7 @@ class SubtitleDownloader:
         x = 0
         for subtitle in self.subtitles:
             x += 1
-            if x > 10:
+            if x > 70:
                 return
             attributes = subtitle["attributes"]
             language = convert_language(attributes["language"], True)
