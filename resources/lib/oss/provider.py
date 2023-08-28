@@ -70,7 +70,7 @@ class OpenSubtitlesProvider:
         self.password = password
         self.tvshow_workaround = tvshow_workaround
 
-        self.request_headers = {"Api-Key": self.api_key, "Content-Type": CONTENT_TYPE, "Accept": CONTENT_TYPE}
+        self.request_headers = {"Api-Key": self.api_key, "User-Agent": "Opensubtitles.com Kodi plugin v1.0.2" ,"Content-Type": CONTENT_TYPE, "Accept": CONTENT_TYPE}
 
         self.session = Session()
         self.session.headers = self.request_headers
