@@ -58,7 +58,6 @@ def get_media_data(tvshow_workaround = False):
 
 def get_language_data(params):
     search_languages = unquote(params.get(u"languages")).split(u",")
-    search_languages_str = u""
     preferred_language = params.get(u"preferredlanguage")
 
     # fallback_language = __addon__.getSetting("fallback_language")
@@ -69,7 +68,6 @@ def get_language_data(params):
 
     if preferred_language and preferred_language not in search_languages and preferred_language != u"Unknown"  and preferred_language != u"Undetermined": 
         search_languages.append(preferred_language)
-        search_languages_str="{0},{1}".format(search_languages_str, preferred_language)
 
     u""" should implement properly as fallback, not additional language, leave it for now
     """
@@ -79,14 +77,11 @@ def get_language_data(params):
 
         #search_languages_str=fallback_language
         
+    sanitized_languages = []
     for language in search_languages:
         lang = convert_language(language)
         if lang:
-            log(__name__, "Language  found: '{0}' search_languages_str:'{1}".format(lang, search_languages_str))
-            if search_languages_str==u"":
-                search_languages_str=lang    
-            else:
-                search_languages_str=search_languages_str+u","+lang
+            sanitized_languages.append(lang)
         #item["languages"].append(lang)
             #if search_languages_str=="":
             #    search_languages_str=lang                            
@@ -97,14 +92,14 @@ def get_language_data(params):
         else:
             log(__name__, "Language code not found: '{}'".format(language))
 
+    if sanitized_languages:
+        search_languages_str = u",".join(sorted(sanitized_languages))
+    else:
+        # fallback if sanitization failed
+        search_languages_str = u",".join(sorted(search_languages))
 
-
-
-
-
-
-
-
+    log(__name__, "Language  found: '{0}' search_languages_str:'{1}".format(lang, search_languages_str))
+    
     
     item = {
         u"hearing_impaired": __addon__.getSetting(u"hearing_impaired"),

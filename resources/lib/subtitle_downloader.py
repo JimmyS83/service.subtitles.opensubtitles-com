@@ -173,7 +173,11 @@ class SubtitleDownloader(object):
     def list_subtitles(self):
         u"""TODO rewrite using new data. do not forget Series/Episodes"""
         x = 0
-        for subtitle in self.subtitles:
+        for subtitle in reversed(sorted(self.subtitles, key=lambda z: (
+                z["attributes"]["from_trusted"],
+                z["attributes"]["votes"],
+                z["attributes"]["ratings"],
+                z["attributes"]["download_count"]))):
             x += 1
             if x > 70:
                 return
