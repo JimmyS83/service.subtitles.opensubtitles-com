@@ -19,12 +19,13 @@ def get_file_path():
 
 
 def get_media_data(tvshow_workaround = False):
-    item = {u"year": int(xbmc.getInfoLabel(u"VideoPlayer.Year")) if xbmc.getInfoLabel(u"VideoPlayer.Year") else u'',
+    item = {u"query": None,
+            u"year": int(xbmc.getInfoLabel(u"VideoPlayer.Year")) if xbmc.getInfoLabel(u"VideoPlayer.Year") else u'',
             u"season_number": int(xbmc.getInfoLabel(u"VideoPlayer.Season")) if xbmc.getInfoLabel(u"VideoPlayer.Season") else u'',
             u"episode_number": int(xbmc.getInfoLabel(u"VideoPlayer.Episode")) if xbmc.getInfoLabel(u"VideoPlayer.Episode") else u'',
             u"title": normalize_string(xbmc.getInfoLabel(u"VideoPlayer.title")) if xbmc.getInfoLabel(u"VideoPlayer.title") else u'',
-            u"tv_show_title": normalize_string(xbmc.getInfoLabel(u"VideoPlayer.TVshowtitle")) if xbmc.getInfoLabel(u"VideoPlayer.TVshowtitle") else u'',
-            u"original_title": normalize_string(xbmc.getInfoLabel(u"VideoPlayer.OriginalTitle")) if xbmc.getInfoLabel(u"VideoPlayer.OriginalTitle") else u''}
+            u"tv_show_title": normalize_string(xbmc.getInfoLabel(u"VideoPlayer.TVshowtitle")) if xbmc.getInfoLabel(u"VideoPlayer.TVshowtitle") else None,
+            u"original_title": normalize_string(xbmc.getInfoLabel(u"VideoPlayer.OriginalTitle")) if xbmc.getInfoLabel(u"VideoPlayer.OriginalTitle") else None}
 
     if item[u"tv_show_title"]:
         item[u"query"] = item[u"tv_show_title"]
@@ -43,10 +44,10 @@ def get_media_data(tvshow_workaround = False):
     elif item[u"original_title"]:
         item[u"query"] = item[u"original_title"]
 
-  #  if not item["query"]:
-  #      log(__name__, "VideoPlayer.OriginalTitle not found")
-  #      item["query"] = normalize_string(xbmc.getInfoLabel("VideoPlayer.Title"))  # no original title, get just Title
-  #      # TODO try guessit if no proper title here
+    if not item[u"query"]:
+        log(__name__, "query still blank, fallback to VideoPlayer.title")
+        item[u"query"] = normalize_string(xbmc.getInfoLabel("VideoPlayer.Title")) if xbmc.getInfoLabel(u"VideoPlayer.title") else u'' # no original title, get just Title
+        # TODO try guessit if no proper title here
 
     # TODO get episodes like that and test them properly out
     #if item[u"episode_number"].lower().find(u"s") > -1:  # Check if season is "Special"
