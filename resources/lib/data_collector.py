@@ -16,11 +16,12 @@ def get_file_path():
 
 
 def get_media_data(tvshow_workaround = False):
-    item = {"year": xbmc.getInfoLabel("VideoPlayer.Year") if xbmc.getInfoLabel(u"VideoPlayer.Year") else '',
+    item = {"query": None,
+            "year": xbmc.getInfoLabel("VideoPlayer.Year") if xbmc.getInfoLabel(u"VideoPlayer.Year") else '',
             "season_number": str(xbmc.getInfoLabel("VideoPlayer.Season")) if xbmc.getInfoLabel(u"VideoPlayer.Season") else '',
             "episode_number": str(xbmc.getInfoLabel("VideoPlayer.Episode")) if xbmc.getInfoLabel(u"VideoPlayer.Episode") else '',
-            "tv_show_title": normalize_string(xbmc.getInfoLabel("VideoPlayer.TVshowtitle")) if xbmc.getInfoLabel(u"VideoPlayer.TVshowtitle") else '',
-            "original_title": normalize_string(xbmc.getInfoLabel("VideoPlayer.OriginalTitle")) if xbmc.getInfoLabel(u"VideoPlayer.OriginalTitle") else ''}
+            "tv_show_title": normalize_string(xbmc.getInfoLabel("VideoPlayer.TVshowtitle")) if xbmc.getInfoLabel(u"VideoPlayer.TVshowtitle") else None,
+            "original_title": normalize_string(xbmc.getInfoLabel("VideoPlayer.OriginalTitle")) if xbmc.getInfoLabel(u"VideoPlayer.OriginalTitle") else None}
 
     if item["tv_show_title"]:
         item["query"] = item["tv_show_title"]
@@ -40,10 +41,10 @@ def get_media_data(tvshow_workaround = False):
     elif item["original_title"]:
         item["query"] = item["original_title"]
 
-  #  if not item["query"]:
-  #      log(__name__, "VideoPlayer.OriginalTitle not found")
-  #      item["query"] = normalize_string(xbmc.getInfoLabel("VideoPlayer.Title"))  # no original title, get just Title
-  #      # TODO try guessit if no proper title here
+    if not item["query"]:
+        log(__name__, "query still blank, fallback to VideoPlayer.title")
+        item["query"] = normalize_string(xbmc.getInfoLabel("VideoPlayer.Title")) if xbmc.getInfoLabel("VideoPlayer.title") else '' # no original title, get just Title
+        # TODO try guessit if no proper title here
 
     # TODO get episodes like that and test them properly out
     #if item["episode_number"].lower().find("s") > -1:  # Check if season is "Special"
