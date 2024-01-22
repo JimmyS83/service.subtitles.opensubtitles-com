@@ -46,7 +46,7 @@ def get_media_data(tvshow_workaround = False):
 
     if not item[u"query"]:
         log(__name__, "query still blank, fallback to VideoPlayer.title")
-        item[u"query"] = normalize_string(xbmc.getInfoLabel("VideoPlayer.Title")) if xbmc.getInfoLabel(u"VideoPlayer.title") else u'' # no original title, get just Title
+        item[u"query"] = normalize_string(xbmc.getInfoLabel(u"VideoPlayer.Title")) if xbmc.getInfoLabel(u"VideoPlayer.title") else u'' # no original title, get just Title
         # TODO try guessit if no proper title here
 
     # TODO get episodes like that and test them properly out
