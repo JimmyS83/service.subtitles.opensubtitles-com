@@ -40,8 +40,8 @@ def query_to_params(query, _type):
     if type(query) is dict or set:
         try:
             request = class_lookup[_type](**query)
-        except ValueError, e:
-            raise ValueError("Invalid request data provided: {0}".format(e))
+        except ValueError:
+            raise ValueError("Invalid request data provided")
     elif type(query) is _type:
         request = query
     else:
@@ -89,18 +89,10 @@ class OpenSubtitlesProvider(object):
             r = self.session.post(login_url, json=login_body, allow_redirects=False, timeout=REQUEST_TIMEOUT)
             logging(r.url)
             r.raise_for_status()
-        except (ConnectionError, Timeout, ReadTimeout), e:
-            raise ServiceUnavailable("Unknown Error: status code {0}".format(e.response.status_code))
-        except HTTPError, e:
-            status_code = e.response.status_code
-            if status_code == 401:
-                raise AuthenticationError("Login failed: {0}".format(e))
-            elif status_code == 429:
-                raise TooManyRequests()
-            elif status_code == 503:
-                raise ProviderError(e)
-            else:
-                raise ProviderError("Bad status code: {0}".format(status_code))
+        except (ConnectionError, Timeout, ReadTimeout):
+            logger.debug("OS.com Unknown Error: ConnectionError, Timeout, ReadTimeout")
+        except HTTPError:
+            logger.debug("OS.com Unknown Error: HTTPError")
         else:
             try:
                 self.user_token = r.json()[u"token"]
@@ -129,16 +121,12 @@ class OpenSubtitlesProvider(object):
             logging(r.url)
             logging(r.request.headers)
             r.raise_for_status()
-        except (ConnectionError, Timeout, ReadTimeout), e:
-            raise ServiceUnavailable("Unknown Error, empty response, status code: {0}".format(e.status_code))
-        except HTTPError, e:
-            status_code = e.response.status_code
-            if status_code == 429:
-                raise TooManyRequests()
-            elif status_code == 503:
-                raise ProviderError(e)
-            else:
-                raise ProviderError("Bad status code: {0}".format(status_code))
+        except (ConnectionError, Timeout, ReadTimeout):
+            logger.debug("OS.com Unknown Error: ConnectionError, Timeout, ReadTimeout")
+            return None
+        except HTTPError:
+            logger.debug("OS.com Unknown Error: HTTPError")
+            return None
 
         try:
             result = r.json()
@@ -159,7 +147,7 @@ class OpenSubtitlesProvider(object):
             logging(u"No cached token, we'll try to login again.")
             try:
                 self.login()
-            except AuthenticationError, e:
+            except AuthenticationError:
                 logging(u"Unable to authenticate.")
             #    raise AuthenticationError("Unable to authenticate.")
             #except (ServiceUnavailable, TooManyRequests, ProviderError, ValueError) as e:
@@ -189,20 +177,10 @@ class OpenSubtitlesProvider(object):
             r = self.session.post(download_url, headers=download_headers, json=download_params, timeout=REQUEST_TIMEOUT)
             logging(r.url)
             r.raise_for_status()
-        except (ConnectionError, Timeout, ReadTimeout), e:
-            raise ServiceUnavailable("Unknown Error, status code: {0}".format(e.status_code))
-        except HTTPError, e:
-            status_code = e.response.status_code
-            if status_code == 401:
-                raise AuthenticationError("Login failed: {0}".format(e.response.reason))
-            elif status_code == 429:
-                raise TooManyRequests()
-            elif status_code == 406:
-                raise DownloadLimitExceeded("Daily download limit reached: {0}".format(e.response.reason))
-            elif status_code == 503:
-                raise ProviderError(e)
-            else:
-                raise ProviderError("Bad status code: {0}".format(status_code))
+        except (ConnectionError, Timeout, ReadTimeout):
+            raise ServiceUnavailable("Unknown Error")
+        except HTTPError:
+                raise ProviderError("HTTP Error")
 
         try:
             subtitle = r.json()

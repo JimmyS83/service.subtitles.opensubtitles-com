@@ -50,8 +50,8 @@ class SubtitleDownloader(object):
 
         try:
             self.open_subtitles = OpenSubtitlesProvider(self.api_key, self.username, self.password, self.tvshow_workaround)
-        except ConfigurationError, e:
-            error(__name__, 32002, e)
+        except ConfigurationError:
+            error(__name__, 32002, "ConfigurationError")
 
     def handle_action(self):
         log(__name__, u"action '%s' called" % self.params[u"action"])
@@ -88,8 +88,8 @@ class SubtitleDownloader(object):
         try:
             self.subtitles = self.open_subtitles.search_subtitles(self.query)
         # TODO handle errors individually. Get clear error messages to the user
-        except (TooManyRequests, ServiceUnavailable, ProviderError, ValueError), e:
-            error(__name__, 32001, e)
+        except (TooManyRequests, ServiceUnavailable, ProviderError, ValueError):
+            error(__name__, 32001, "TooManyRequests, ServiceUnavailable, ProviderError, ValueError")
 
         if self.subtitles and len(self.subtitles):
             log(__name__, len(self.subtitles))
@@ -115,8 +115,8 @@ class SubtitleDownloader(object):
                 try:
                     self.subtitles = self.open_subtitles.search_subtitles(self.query)
                 # TODO handle errors individually. Get clear error messages to the user
-                except (TooManyRequests, ServiceUnavailable, ProviderError, ValueError), e:
-                    error(__name__, 32001, e)
+                except (TooManyRequests, ServiceUnavailable, ProviderError, ValueError):
+                    error(__name__, 32001, "TooManyRequests, ServiceUnavailable, ProviderError, ValueError")
 
                 if self.subtitles and len(self.subtitles):
                     log(__name__, len(self.subtitles))
@@ -137,18 +137,18 @@ class SubtitleDownloader(object):
                 {u"file_id": self.params[u"id"], u"sub_format": self.sub_format})
         # TODO handle errors individually. Get clear error messages to the user
             log(__name__, u"XYXYXX download '%s' " % self.file)
-        except AuthenticationError, e:
-            error(__name__, 32003, e)
+        except AuthenticationError:
+            error(__name__, 32003, "AuthenticationError")
             valid = 0
-        except DownloadLimitExceeded, e:
-            log(__name__, "XYXYXX limit excedded, username: {0}  {1}".format(self.username, e))
+        except DownloadLimitExceeded:
+            log(__name__, "XYXYXX limit excedded, username: {0}".format(self.username))
             if self.username==u"":
-                error(__name__, 32006, e)
+                error(__name__, 32006, "Empty username")
             else:
-                error(__name__, 32004, e)
+                error(__name__, 32004, "DownloadLimitExceeded")
             valid = 0
-        except (TooManyRequests, ServiceUnavailable, ProviderError, ValueError), e:
-            error(__name__, 32001, e)
+        except (TooManyRequests, ServiceUnavailable, ProviderError, ValueError):
+            error(__name__, 32001, "TooManyRequests, ServiceUnavailable, ProviderError, ValueError")
             valid = 0
 
         subtitle_path = os.path.join(__temp__, "{0}.{1}".format(str(uuid.uuid4()), self.sub_format))
