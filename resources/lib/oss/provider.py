@@ -90,9 +90,9 @@ class OpenSubtitlesProvider(object):
             logging(r.url)
             r.raise_for_status()
         except (ConnectionError, Timeout, ReadTimeout):
-            logger.debug("OS.com Unknown Error: ConnectionError, Timeout, ReadTimeout")
+            logging("OS.com Unknown Error: ConnectionError, Timeout, ReadTimeout")
         except HTTPError:
-            logger.debug("OS.com Unknown Error: HTTPError")
+            logging("OS.com Unknown Error: HTTPError")
         else:
             try:
                 self.user_token = r.json()[u"token"]
@@ -122,10 +122,10 @@ class OpenSubtitlesProvider(object):
             logging(r.request.headers)
             r.raise_for_status()
         except (ConnectionError, Timeout, ReadTimeout):
-            logger.debug("OS.com Unknown Error: ConnectionError, Timeout, ReadTimeout")
+            logging("OS.com Unknown Error: ConnectionError, Timeout, ReadTimeout")
             return None
         except HTTPError:
-            logger.debug("OS.com Unknown Error: HTTPError")
+            logging("OS.com Unknown Error: HTTPError")
             return None
 
         try:

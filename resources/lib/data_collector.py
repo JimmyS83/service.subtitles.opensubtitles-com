@@ -18,7 +18,7 @@ def get_file_path():
     return xbmc.Player().getPlayingFile()
 
 
-def get_media_data(tvshow_workaround = False):
+def get_media_data(tvshow_workaround = True, original_filename = True):
     item = {u"query": None,
             u"year": int(xbmc.getInfoLabel(u"VideoPlayer.Year")) if xbmc.getInfoLabel(u"VideoPlayer.Year") else u'',
             u"season_number": int(xbmc.getInfoLabel(u"VideoPlayer.Season")) if xbmc.getInfoLabel(u"VideoPlayer.Season") else u'',
@@ -40,14 +40,18 @@ def get_media_data(tvshow_workaround = False):
         item[u"year"] = None  # Kodi gives episode year, OS searches by series year. Without year safer.
         item[u"imdb_id"] = None  # Kodi gives strange id. Without id safer.
         # TODO if no season and episode numbers use guessit
+        
+        # WORKAROUND TO NOT USE INTERNACIONALIZED TV Show Name, there is no Originatl tv show title
+        if original_filename == 'true':
+            item[u"query"] = None     # search() will replace query with basename
 
     elif item[u"original_title"]:
         item[u"query"] = item[u"original_title"]
 
-    if not item[u"query"]:
-        log(__name__, "query still blank, fallback to VideoPlayer.title")
-        item[u"query"] = normalize_string(xbmc.getInfoLabel(u"VideoPlayer.Title")) if xbmc.getInfoLabel(u"VideoPlayer.title") else u'' # no original title, get just Title
-        # TODO try guessit if no proper title here
+        if not item[u"query"]:
+            log(__name__, "query still blank, fallback to VideoPlayer.title")
+            item[u"query"] = normalize_string(xbmc.getInfoLabel(u"VideoPlayer.Title")) if xbmc.getInfoLabel(u"VideoPlayer.title") else u'' # no original title, get just Title
+            # TODO try guessit if no proper title here
 
     # TODO get episodes like that and test them properly out
     #if item[u"episode_number"].lower().find(u"s") > -1:  # Check if season is "Special"
