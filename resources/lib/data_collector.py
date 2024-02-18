@@ -15,7 +15,7 @@ def get_file_path():
     return xbmc.Player().getPlayingFile()
 
 
-def get_media_data(tvshow_workaround = False):
+def get_media_data(tvshow_workaround = True, original_filename = True):
     item = {"query": None,
             "year": xbmc.getInfoLabel("VideoPlayer.Year") if xbmc.getInfoLabel(u"VideoPlayer.Year") else '',
             "season_number": str(xbmc.getInfoLabel("VideoPlayer.Season")) if xbmc.getInfoLabel(u"VideoPlayer.Season") else '',
