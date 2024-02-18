@@ -67,5 +67,5 @@ msgid "Machine Translated"
 msgstr "Strojový překlad"
 
 msgctxt "#32214"
-msgid "Use query string for TVShows"
-msgstr "Použít query řetězec pro TVShows"
+msgid "Use filename for TVShows"
+msgstr "Použít jméno souboru pro Seriály"

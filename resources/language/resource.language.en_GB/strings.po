@@ -65,5 +65,5 @@ msgid "Machine Translated"
 msgstr ""
 
 msgctxt "#32214"
-msgid "Use query string for TVShows"
+msgid "Use filename for TVShows"
 msgstr ""

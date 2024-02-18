@@ -89,18 +89,10 @@ class OpenSubtitlesProvider:
             r = self.session.post(login_url, json=login_body, allow_redirects=False, timeout=REQUEST_TIMEOUT)
             logging(r.url)
             r.raise_for_status()
-        except (ConnectionError, Timeout, ReadTimeout) as e:
-            raise ServiceUnavailable(f"Unknown Error: {e.response.status_code}: {e!r}")
-        except HTTPError as e:
-            status_code = e.response.status_code
-            if status_code == 401:
-                raise AuthenticationError(f"Login failed: {e}")
-            elif status_code == 429:
-                raise TooManyRequests()
-            elif status_code == 503:
-                raise ProviderError(e)
-            else:
-                raise ProviderError(f"Bad status code: {status_code}")
+        except (ConnectionError, Timeout, ReadTimeout):
+            logging("OS.com Unknown Error: ConnectionError, Timeout, ReadTimeout")
+        except HTTPError:
+            logging("OS.com Unknown Error: HTTPError")
         else:
             try:
                 self.user_token = r.json()["token"]
@@ -129,16 +121,12 @@ class OpenSubtitlesProvider:
             logging(r.url)
             logging(r.request.headers)
             r.raise_for_status()
-        except (ConnectionError, Timeout, ReadTimeout) as e:
-            raise ServiceUnavailable(f"Unknown Error, empty response: {e.status_code}: {e!r}")
-        except HTTPError as e:
-            status_code = e.response.status_code
-            if status_code == 429:
-                raise TooManyRequests()
-            elif status_code == 503:
-                raise ProviderError(e)
-            else:
-                raise ProviderError(f"Bad status code: {status_code}")
+        except (ConnectionError, Timeout, ReadTimeout):
+            logging("OS.com Unknown Error: ConnectionError, Timeout, ReadTimeout")
+            return None
+        except HTTPError:
+            logging("OS.com Unknown Error: HTTPError")
+            return None
 
         try:
             result = r.json()

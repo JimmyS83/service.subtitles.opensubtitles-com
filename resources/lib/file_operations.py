@@ -20,6 +20,8 @@ def get_file_data(file_original_path):
             orig_path = str(orig_path)
             item["basename"] = os.path.basename(orig_path)
             item["file_original_path"] = orig_path
+        else:
+            item["basename"] = os.path.splitext(os.path.basename(xbmc.getInfoLabel(u"Player.Filename")))[0]
         if orig_size:
             item["file_size"] = int(orig_size)
         if orig_oshash:

@@ -20,6 +20,7 @@ def get_media_data(tvshow_workaround = False):
             "year": xbmc.getInfoLabel("VideoPlayer.Year") if xbmc.getInfoLabel(u"VideoPlayer.Year") else '',
             "season_number": str(xbmc.getInfoLabel("VideoPlayer.Season")) if xbmc.getInfoLabel(u"VideoPlayer.Season") else '',
             "episode_number": str(xbmc.getInfoLabel("VideoPlayer.Episode")) if xbmc.getInfoLabel(u"VideoPlayer.Episode") else '',
+            "title": normalize_string(xbmc.getInfoLabel("VideoPlayer.title")) if xbmc.getInfoLabel("VideoPlayer.title") else '',
             "tv_show_title": normalize_string(xbmc.getInfoLabel("VideoPlayer.TVshowtitle")) if xbmc.getInfoLabel(u"VideoPlayer.TVshowtitle") else None,
             "original_title": normalize_string(xbmc.getInfoLabel("VideoPlayer.OriginalTitle")) if xbmc.getInfoLabel(u"VideoPlayer.OriginalTitle") else None}
 
@@ -37,14 +38,18 @@ def get_media_data(tvshow_workaround = False):
         item["imdb_id"] = None  # Kodi gives strange id. Without id safer.
 
         # TODO if no season and episode numbers use guessit
+        
+        # WORKAROUND TO NOT USE INTERNACIONALIZED TV Show Name, there is no Originatl tv show title
+        if original_filename == 'true':
+            item[u"query"] = None     # search() will replace query with basename
 
     elif item["original_title"]:
         item["query"] = item["original_title"]
 
-    if not item["query"]:
-        log(__name__, "query still blank, fallback to VideoPlayer.title")
-        item["query"] = normalize_string(xbmc.getInfoLabel("VideoPlayer.Title")) if xbmc.getInfoLabel("VideoPlayer.title") else '' # no original title, get just Title
-        # TODO try guessit if no proper title here
+        if not item["query"]:
+            log(__name__, "query still blank, fallback to VideoPlayer.title")
+            item["query"] = normalize_string(xbmc.getInfoLabel("VideoPlayer.Title")) if xbmc.getInfoLabel("VideoPlayer.title") else '' # no original title, get just Title
+            # TODO try guessit if no proper title here
 
     # TODO get episodes like that and test them properly out
     #if item["episode_number"].lower().find("s") > -1:  # Check if season is "Special"

@@ -36,6 +36,7 @@ class SubtitleDownloader:
         self.api_key = __addon__.getSetting("APIKey")
         self.username = __addon__.getSetting("OSuser")
         self.password = __addon__.getSetting("OSpass")
+        self.original_filename = __addon__.getSetting("original_filename")
         self.tvshow_workaround = __addon__.getSetting("tvshow_workaround")
 
         log(__name__, sys.argv)
@@ -72,7 +73,7 @@ class SubtitleDownloader:
         if query:
             media_data = {"query": query}
         else:
-            media_data = get_media_data(self.tvshow_workaround)
+            media_data = get_media_data(self.tvshow_workaround, self.original_filename)
             if "query" not in media_data or not media_data["query"]:
                 if "basename" in file_data:
                     media_data["query"] = file_data["basename"]     # rewrites Original name with basename in query !!!

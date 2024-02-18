@@ -32,9 +32,14 @@
         </category>
         <category id="filter" label="32102">
             <group id="1">
-				<setting id="tvshow_workaround" type="boolean" label="32214">
+				<setting id="tvshow_workaround" type="boolean" label="Use query string for TVShows">
                     <level>0</level>
-                    <default>false</default>
+                    <default>true</default>
+                    <control type="toggle" />
+                </setting>
+				<setting id="original_filename" type="boolean" label="32214">
+                    <level>0</level>
+                    <default>true</default>
                     <control type="toggle" />
                 </setting>
                 <setting id="hearing_impaired" type="string" label="32211">
