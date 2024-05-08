@@ -69,3 +69,7 @@ msgstr "Strojový překlad"
 msgctxt "#32214"
 msgid "Use filename for TVShows"
 msgstr "Použít jméno souboru pro Seriály"
+
+msgctxt "#32215"
+msgid "Use query SxxEyy instead API fields for TVShows"
+msgstr "Použít SxxEyy v query místo využití API pro Seriály"

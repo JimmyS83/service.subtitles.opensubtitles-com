@@ -67,3 +67,7 @@ msgstr ""
 msgctxt "#32214"
 msgid "Use filename for TVShows"
 msgstr ""
+
+msgctxt "#32215"
+msgid "Use query SxxEyy instead API fields for TVShows"
+msgstr ""

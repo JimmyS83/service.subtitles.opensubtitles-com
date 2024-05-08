@@ -175,10 +175,10 @@ class SubtitleDownloader(object):
         u"""TODO rewrite using new data. do not forget Series/Episodes"""
         x = 0
         for subtitle in reversed(sorted(self.subtitles, key=lambda z: (
-                z["attributes"]["from_trusted"],
-                z["attributes"]["votes"],
-                z["attributes"]["ratings"],
-                z["attributes"]["download_count"]))):
+                bool(z["attributes"].get("from_trusted", False)),
+                z["attributes"].get("votes", 0) or 0,
+                z["attributes"].get("ratings", 0) or 0,
+                z["attributes"].get("download_count", 0) or 0))):
             x += 1
             if x > 70:
                 return

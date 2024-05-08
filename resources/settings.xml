@@ -10,7 +10,7 @@
 		</setting>
 	</category>
 	<category label="32102">
-		<setting id="tvshow_workaround" type="bool" label="Use query string for TVShows" default="true" />
+		<setting id="tvshow_workaround" type="bool" label="32215" default="false" />
 		<setting id="original_filename" type="bool" label="32214" default="true" />
 		<setting id="hearing_impaired" type="select" label="32211" values="include|exclude|only" default="1" />
 		<setting id="foreign_parts_only" type="select" label="32212" values="include|exclude|only" default="0" />
