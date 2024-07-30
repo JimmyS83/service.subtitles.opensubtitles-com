@@ -3,7 +3,6 @@
 import os
 import shutil
 import sys
-import uuid
 
 import xbmcaddon
 import xbmcgui
@@ -48,6 +47,7 @@ class SubtitleDownloader(object):
         self.query = {}
         self.subtitles = {}
         self.file = {}
+        self.videopath = False
 
         try:
             self.open_subtitles = OpenSubtitlesProvider(self.api_key, self.username, self.password, self.tvshow_workaround)
@@ -66,6 +66,12 @@ class SubtitleDownloader(object):
     def search(self, query=u""):
         file_data = get_file_data(get_file_path())
         language_data = get_language_data(self.params)
+        
+        if not file_data["temp"]:  # pass filepath to download
+            self.videopath = os.path.splitext(file_data["file_original_path"])[0]
+            
+        else:   # use Kodi temp directory
+            self.videopath = False
 
         log(__name__, u"file_data '%s' " % file_data)
         log(__name__, u"language_data '%s' " % language_data)
@@ -152,13 +158,39 @@ class SubtitleDownloader(object):
             error(__name__, 32001, "TooManyRequests, ServiceUnavailable, ProviderError, ValueError")
             valid = 0
 
-        subtitle_path = os.path.join(__temp__, "{0}.{1}".format(str(uuid.uuid4()), self.sub_format))
-       
+        # Kodi lang-code difference vs OS.com API langcodes return
+        if self.params["language"].lower() == 'pt-pt': self.params["language"] = 'pt'
+        elif self.params["language"].lower() == 'pt-pb': self.params["language"] = 'pb'
+        
+        if self.params["videopath"] == 'False':  # use temporary OSS subtitle location
+            try: # kodi < k19
+                dir_path = xbmc.translatePath('special://temp/oss')
+            except:    # kodi > k19
+                dir_path = xbmcvfs.translatePath('special://temp/oss')       
+                
+            if xbmcvfs.exists(dir_path):    # lets clean files from last usage
+                dirs, files = xbmcvfs.listdir(dir_path)
+                for file in files:
+                    xbmcvfs.delete(os.path.join(dir_path, file))
+                    
+                if not xbmcvfs.exists(dir_path):  # lets create custom OSS sub directory if not exists
+                    xbmcvfs.mkdir(dir_path)
+                
+            subtitle_path = os.path.join(dir_path, "{0}.{1}.{2}".format('TempSubtitle', self.params["language"], self.sub_format))
+ 
+        else:   # save subtitles aside video file
+            try: # kodi < k19
+                videopath = xbmc.validatePath(self.params["videopath"])
+            except:    # kodi > k19
+                videopath = xbmcvfs.validatePath(self.params["videopath"]) 
+
+            subtitle_path = "{0}.{1}.{2}".format(videopath, self.params["language"], self.sub_format)
+            
         if (valid==1):
-            tmp_file = open(subtitle_path, u"w" + u"b")
+            #tmp_file = open(subtitle_path, u"w" + u"b")
+            tmp_file = xbmcvfs.File(subtitle_path, u"w") # needed for Kodi network share writes
             tmp_file.write(self.file[u"content"])
             tmp_file.close()
-        
 
         list_item = xbmcgui.ListItem(label=subtitle_path)
         xbmcplugin.addDirectoryItem(handle=self.handle, url=subtitle_path, listitem=list_item, isFolder=False)
@@ -195,7 +227,7 @@ class SubtitleDownloader(object):
             list_item.setProperty(u"sync", u"true" if (u"moviehash_match" in attributes and attributes[u"moviehash_match"]) else u"false")
             list_item.setProperty(u"hearing_imp", u"true" if attributes[u"hearing_impaired"] else u"false")
             u"""TODO take care of multiple cds id&id or something"""
-            url = "plugin://{0}/?action=download&id={1}".format(__scriptid__, attributes['files'][0]['file_id'])
+            url = f"plugin://{__scriptid__}/?action=download&id={attributes['files'][0]['file_id']}&language={attributes['language']}&videopath={self.videopath}"
 
             xbmcplugin.addDirectoryItem(handle=self.handle, url=url, listitem=list_item, isFolder=False)
         xbmcplugin.endOfDirectory(self.handle)
