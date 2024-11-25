@@ -159,14 +159,14 @@ class SubtitleDownloader:
             except: # kodi < k19
                 dir_path = xbmc.translatePath('special://temp/oss')
                 
+            if not xbmcvfs.exists(dir_path):  # lets create custom OSS sub directory if not exists
+                    xbmcvfs.mkdir(dir_path)
+            
             if xbmcvfs.exists(dir_path):    # lets clean files from last usage
                 dirs, files = xbmcvfs.listdir(dir_path)
                 for file in files:
                     xbmcvfs.delete(os.path.join(dir_path, file))
-                    
-                if not xbmcvfs.exists(dir_path):  # lets create custom OSS sub directory if not exists
-                    xbmcvfs.mkdir(dir_path)
-                
+              
             subtitle_path = os.path.join(dir_path, "{0}.{1}.{2}".format('TempSubtitle', self.params["language"], self.sub_format))
  
         else:   # save subtitles aside video file
